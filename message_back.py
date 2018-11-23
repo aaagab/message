@@ -1,9 +1,8 @@
+#usr/bin/env python3
 # author: Gabriel Auger
 # version: 
 # name: message
 # license: MIT
-#usr/bin/env python3
-
 
 from utils.format_text import Format_text as ft
 import traceback
