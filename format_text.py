@@ -1,8 +1,13 @@
+# author: Gabriel Auger
+# version: 
+# name: message
+# license: MIT
 #!/usr/bin/env python3
 import re
 import os
 import sys
 import subprocess
+
 
 
 class Format_text(object):
