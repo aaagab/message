@@ -1,6 +1,6 @@
 #!usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-draft-1542937104
+# version: 1.0.0-draft-1542937170
 # name: message
 # license: MIT
 
