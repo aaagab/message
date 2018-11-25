@@ -1,10 +1,10 @@
 #!usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-draft-1542938405
+# version: 1.0.0-draft-1543110117
 # name: message
 # license: MIT
 
-from format_text import Format_text as ft
+from .format_text import Format_text as ft
 import traceback
 import inspect, sys
 
