@@ -10,7 +10,7 @@ except:
     from .format_text import Format_text as ft
 
 import traceback
-import inspect, sys
+import inspect, sys, os
 
 def app_error(*msgs):
     if len(msgs) == 1:
@@ -75,7 +75,12 @@ def subtitle(msg):
     print("  "+ft.lBlue(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
 
 def dbg(funct, *msgs):
-    from modules.json_config.json_config import Json_config
+    try:
+        from modules.json_config.json_config import Json_config
+    except:
+        sys.path.insert(1, os.path.join(sys.path[0], '..'))
+        from json_config.json_config import Json_config
+    
     conf = Json_config()
     if conf.get_value("debug"):
         globals()[funct](*msgs)

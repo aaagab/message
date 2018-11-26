@@ -5,18 +5,17 @@
 # license: MIT
 
 import message as msg
+import sys, os
 try:
     from format_text import Format_text as ft
 except:
     from .format_text import Format_text as ft
 
-# try:
-# except:
-#     sys.path.insert(1, os.path.join(sys.path[0], '..'))
-#     import message.message as msg
-#     from message.format_text import Format_text as ft
-
-from modules.json_config.json_config import Json_config
+try:
+    from modules.json_config.json_config import Json_config
+except:
+    sys.path.insert(1, os.path.join(sys.path[0], '..'))
+    from json_config.json_config import Json_config
 
 ft.clear_scrolling_history()
 print("scrolling history has been erased")
