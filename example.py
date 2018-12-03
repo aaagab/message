@@ -4,18 +4,19 @@
 # name: message
 # license: MIT
 
-import message as msg
 import sys, os
-try:
-    from format_text import Format_text as ft
-except:
-    from .format_text import Format_text as ft
 
+
+from modules.importpath.importpath import Import_path
+import_path=Import_path().open()
 try:
+    import message as msg
+    from format_text import Format_text as ft
     from modules.json_config.json_config import Json_config
-except:
-    sys.path.insert(1, os.path.join(sys.path[0], '..'))
-    from json_config.json_config import Json_config
+    import_path.success()
+except Exception as e:
+    import_path.error(e)
+import_path.close()
 
 ft.clear_scrolling_history()
 print("scrolling history has been erased")
