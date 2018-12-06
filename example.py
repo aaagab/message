@@ -6,17 +6,12 @@
 
 import sys, os
 
-
-from modules.importpath.importpath import Import_path
-import_path=Import_path().open()
-try:
-    import message as msg
-    from format_text import Format_text as ft
-    from modules.json_config.json_config import Json_config
-    import_path.success()
-except Exception as e:
-    import_path.error(e)
-import_path.close()
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+import message as msg
+from format_text import Format_text as ft
+from modules.json_config.json_config import Json_config
+del sys.path[0:2]
 
 ft.clear_scrolling_history()
 print("scrolling history has been erased")
