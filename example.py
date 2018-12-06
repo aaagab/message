@@ -5,10 +5,8 @@
 # license: MIT
 
 import sys, os
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-import message as msg
 from format_text import Format_text as ft
 from modules.json_config.json_config import Json_config
 del sys.path[0:2]
