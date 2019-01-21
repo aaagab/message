@@ -5,11 +5,8 @@
 # license: MIT
 
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 from format_text import Format_text as ft
-from modules.json_config.json_config import Json_config
-del sys.path[0:2]
+import message as msg
 
 ft.clear_scrolling_history()
 print("scrolling history has been erased")
@@ -65,6 +62,5 @@ msg.user_error(
     )
 print()
 
-Json_config().set_value("debug", True)
 msg.dbg("info", "This is a debug info message")
 msg.dbg("subtitle", "This is a debug subtitle, debug can apply to any msg type")

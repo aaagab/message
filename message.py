@@ -5,12 +5,9 @@
 # license: MIT
 
 import traceback
-import inspect, sys, os
+import inspect, sys, os, json
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 from format_text import Format_text as ft
-del sys.path[0:2]
 
 def app_error(*msgs):
     if len(msgs) == 1:
@@ -75,12 +72,31 @@ def subtitle(msg):
     print("  "+ft.lBlue(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
 
 def dbg(funct, *msgs):
-    try:
-        from modules.json_config.json_config import Json_config
-    except:
-        sys.path.insert(1, os.path.join(sys.path[0], '..'))
-        from json_config.json_config import Json_config
-    
-    conf = Json_config()
-    if conf.get_value("debug"):
+    filen_main=os.path.basename(sys.argv[0])
+    unique_paths=[]
+    data={}
+    debug=False
+    for direpa in sys.path:
+        if direpa not in unique_paths:
+            filenpa_main=os.path.join(direpa, filen_main)
+            if os.path.exists(filenpa_main):
+                filenpa_config=os.path.join(direpa, "config", "config.json")
+                if os.path.exists(filenpa_config):
+                    with open(filenpa_config, "r") as f:
+                        try:
+                            data=json.load(f)
+                        except:
+                            pass
+
+                    if "debug" in data and data["debug"] is True:
+                        debug=True
+                        break         
+
+        if not unique_paths:
+            unique_paths.append(direpa)
+
+    if debug is True:
         globals()[funct](*msgs)
+        return True
+    else:
+        return False
