@@ -1,0 +1,14 @@
+{
+    "authors": [
+        "Gabriel Auger"
+    ],
+    "deps": [],
+    "description": "Simple tui library for python on linux",
+    "license": [
+        "MIT"
+    ],
+    "name": "message",
+    "repository": "/data/rel",
+    "standalone": false,
+    "uuid4": "ba5f9651-4f0b-450c-8cbc-4f045e86040d"
+}
