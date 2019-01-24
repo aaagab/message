@@ -9,7 +9,9 @@
         "MIT"
     ],
     "name": "message",
-    "repository": "/data/rel",
+    "path": "2",
+    "sha256": "da9ceda4f55ee47d5ab80075044255035ef6804012e58494559957e32be4f275",
     "standalone": false,
-    "uuid4": "3413e5ee-26af-4be3-9c40-430efbf9069e"
+    "uuid4": "7e898bfa-50a1-4388-bce8-e6eab79c88e6",
+    "version": "0.1.0"
 }
