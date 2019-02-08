@@ -5,11 +5,12 @@
     "deps": [],
     "description": "Simple tui library for python on linux",
     "filen_main": "message.py",
-    "license": [
+    "licenses": [
         "MIT"
     ],
     "name": "message",
     "repository": "/data/rel",
     "standalone": false,
-    "uuid4": "10a43434-8a38-4fef-a172-2f4559a4b675"
+    "uuid4": "10a43434-8a38-4fef-a172-2f4559a4b675",
+    "version": "2.0.0"
 }
