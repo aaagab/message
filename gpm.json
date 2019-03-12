@@ -3,14 +3,14 @@
         "Gabriel Auger"
     ],
     "deps": [],
-    "description": "Simple tui library for python on linux",
+    "description": "Simple tui library for python",
     "filen_main": "message.py",
+    "gpm_version": "0.1.0",
+    "installer": "gpm",
     "licenses": [
         "MIT"
     ],
     "name": "message",
-    "repository": "/data/rel",
-    "standalone": false,
-    "uuid4": "10a43434-8a38-4fef-a172-2f4559a4b675",
+    "uuid4": "cf09346e-b436-4259-b6dd-e56516b508a5",
     "version": "1.1.0"
 }
