@@ -7,10 +7,13 @@
 import traceback
 import inspect, sys, os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-from format_text import Format_text as ft
-del sys.path[0:2]
+# sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+# sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+# from format_text import Format_text as ft
+# del sys.path[0:2]
+
+from ..gpkgs.format_text import ft
+
 
 def app_error(*msgs):
     if len(msgs) == 1:
@@ -74,13 +77,8 @@ def subtitle(msg):
     tmp_str=ldeco+msg+rdeco;
     print("  "+ft.lBlue(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
 
-def dbg(funct, *msgs):
-    try:
-        from modules.json_config.json_config import Json_config
-    except:
-        sys.path.insert(1, os.path.join(sys.path[0], '..'))
-        from json_config.json_config import Json_config
-    
-    conf = Json_config()
-    if conf.get_value("debug"):
+def dbg(funct, *msgs, **user_data):
+    data=dict(debug=False)
+    data.update(user_data)
+    if data["debug"] is True:
         globals()[funct](*msgs)

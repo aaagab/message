@@ -5,13 +5,17 @@
 # license: MIT
 
 import sys, os
-from format_text import Format_text as ft
-import message as msg
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+try:
+    import src as msg
+except:
+    import message as msg
+del sys.path[0]
 
-ft.clear_scrolling_history()
+msg.ft.clear_scrolling_history()
 print("scrolling history has been erased")
 
-ft.clear_screen()
+msg.ft.clear_screen()
 print("screen has been cleared")
 
 msg.title("This is a title")
@@ -62,5 +66,5 @@ msg.user_error(
     )
 print()
 
-msg.dbg("info", "This is a debug info message")
-msg.dbg("subtitle", "This is a debug subtitle, debug can apply to any msg type")
+msg.dbg("info", "This is a debug info message", debug=True)
+msg.dbg("subtitle", "This is a debug subtitle, debug can apply to any msg type", debug=True)
