@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.3.0
-# name: message
+# version: 2.0.0
+# name: format_text
 # license: MIT
 import re
-import os
-import sys
-import subprocess
 
 class Format_text(object):
 	# create color function
