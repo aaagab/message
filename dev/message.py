@@ -7,31 +7,29 @@
 import traceback
 import inspect, sys, os
 
-# sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-# sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-# from format_text import Format_text as ft
-# del sys.path[0:2]
-
 from ..gpkgs.format_text import ft
 
-
-def app_error(*msgs):
+def error(*msgs, trace=False):
     if len(msgs) == 1:
         print(ft.error("".join(msgs)))
     else:
         for msg in msgs:
             print(ft.error(""+msg))
-    # frame,filename,line_number,function_name,lines,index=inspect.stack()[1]
-    # print("\t"+str(line_number)+": "+filename)
-    traceback.print_stack()
-    traceback.format_exc()
 
-def user_error(*msgs):
-    if len(msgs) == 1:
-        print(ft.error("".join(msgs)))
-    else:
-        for msg in msgs:
-            print(ft.error(""+msg))
+    if trace is True:
+        printed_trace=False
+        if hasattr(traceback, 'format_exc'):
+            text=traceback.format_exc()
+            if text is not None:
+                if text.strip() != "NoneType: None":
+                    printed_trace=True
+                    print(text)
+
+        if printed_trace is False:
+            if hasattr(traceback, 'print_stack'):
+                traceback.print_stack()
+            else:
+                print("No stack to print")
 
 def success(*msgs):
     if len(msgs) == 1:
@@ -54,31 +52,6 @@ def info(*msgs):
         for msg in msgs:
             print(ft.info(""+msg))
 
-
-def raw_print(msg):
-    print(msg)
-
-def draw_line(char, n):
-    tmp_str=""
-    for i in range(0, n):
-        tmp_str+=char
-
-    return tmp_str
-
-def title(msg):
-    print()
-    print(ft.lGreen("  @@@@ ")+ft.bold(msg)+ft.lGreen(" @@@@"))
-    print()
-
-def subtitle(msg):
-    print()
-    ldeco="### "
-    rdeco=""
-    tmp_str=ldeco+msg+rdeco;
-    print("  "+ft.lBlue(ldeco)+ft.bold(msg)+ft.lCyan(rdeco))
-
-def dbg(funct, *msgs, **user_data):
-    data=dict(debug=False)
-    data.update(user_data)
-    if data["debug"] is True:
+def dbg(funct, *msgs, debug=False):
+    if debug is True:
         globals()[funct](*msgs)
