@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.0.0
+# version: 3.1.0
 # name: message
 # license: MIT
 
@@ -18,18 +18,20 @@ def error(*msgs, trace=False):
 
     if trace is True:
         printed_trace=False
-        if hasattr(traceback, 'format_exc'):
-            text=traceback.format_exc()
-            if text is not None:
-                if text.strip() != "NoneType: None":
-                    printed_trace=True
-                    print(text)
+        if hasattr(traceback, 'print_stack'):
+            printed_trace=True
+            traceback.print_stack()
 
         if printed_trace is False:
-            if hasattr(traceback, 'print_stack'):
-                traceback.print_stack()
-            else:
-                print("No stack to print")
+            if hasattr(traceback, 'format_exc'):
+                text=traceback.format_exc()
+                if text is not None:
+                    if text.strip() != "NoneType: None":
+                        printed_trace=True
+                        print(text)
+
+        if printed_trace is False:
+            print("No stack to print")
 
 def success(*msgs):
     if len(msgs) == 1:
