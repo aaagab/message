@@ -4,17 +4,16 @@
 # name: message
 # license: MIT
 
+import logging
 import traceback
 import inspect, sys, os
 
 from ..gpkgs.format_text import ft
 
-def error(*msgs, trace=False):
-    if len(msgs) == 1:
-        print(ft.error("".join(msgs)))
-    else:
-        for msg in msgs:
-            print(ft.error(""+msg))
+def error(*msgs, code=None, format="", trace=False ):
+    error_msg=print_message("error", *msgs, to_print=False)
+    logging.basicConfig(format=format)
+    logging.error(error_msg)
 
     if trace is True:
         printed_trace=False
@@ -33,27 +32,35 @@ def error(*msgs, trace=False):
         if printed_trace is False:
             print("No stack to print")
 
-def success(*msgs):
+    if code is not None:
+        sys.exit(code)
+        
+def success(*msgs, **options):
+    print_message("success", *msgs)
+
+def warning(*msgs, **options):
+    print_message("warning", *msgs)
+
+def info(*msgs, **options):
+    print_message("info", *msgs)
+
+def dbg(funct, *msgs, **options):
+    if not "debug" in options:
+        options["debug"]=False
+
+    if options["debug"] is True:
+        globals()[funct](*msgs, **options)
+
+def print_message(log_type, *msgs, to_print=True):
+    text=""
     if len(msgs) == 1:
-        print(ft.success("".join(msgs)))
+        text=ft.log(log_type, "".join(msgs))
     else:
         for msg in msgs:
-            print(ft.success(""+msg))
+            text+="{}\n".format((ft.log(log_type, msg)))
 
-def warning(*msgs):
-    if len(msgs) == 1:
-        print(ft.warning("".join(msgs)))
+    if to_print is True:
+        print(text)
     else:
-        for msg in msgs:
-            print(ft.warning(""+msg))
-
-def info(*msgs):
-    if len(msgs) == 1:
-        print(ft.info("".join(msgs)))
-    else:
-        for msg in msgs:
-            print(ft.info(""+msg))
-
-def dbg(funct, *msgs, debug=False):
-    if debug is True:
-        globals()[funct](*msgs)
+        return text
+    

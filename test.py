@@ -75,3 +75,5 @@ if __name__ == "__main__":
     tmp_str=ldeco+text+rdeco;
     print("  "+msg.ft.lBlue(ldeco)+msg.ft.bold(text)+msg.ft.lCyan(rdeco))
     print()
+
+    msg.error("This is an error with stack trace and system exit with code 1", code=1, trace=True)
