@@ -56,8 +56,11 @@ def print_message(log_type, *msgs, to_print=True):
     if len(msgs) == 1:
         text=ft.log(log_type, "".join(msgs))
     else:
-        for msg in msgs:
-            text+="{}\n".format((ft.log(log_type, msg)))
+        for m, msg in enumerate(msgs):
+            end_line="\n"
+            if m+1 == len(msgs):
+                end_line=""
+            text+="{}{}".format(ft.log(log_type, msg), end_line)
 
     if to_print is True:
         print(text)
