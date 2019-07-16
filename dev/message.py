@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.0.1
+# version: 5.0.0
 # name: message
 # license: MIT
 
@@ -10,12 +10,58 @@ import inspect, sys, os
 
 from ..gpkgs.format_text import ft
 
-def error(*msgs, code=None, format="", trace=False ):
-    error_msg=print_message("error", *msgs, to_print=False)
-    logging.basicConfig(format=format)
-    logging.error(error_msg)
+opts=dict(
+    exit=None,
+    trace=False,
+)
 
-    if trace is True:
+def error(*msgs, **options ):
+    print_message("error", *msgs, **options)
+        
+def success(*msgs, **options):
+    print_message("success", *msgs, **options)
+
+def warning(*msgs, **options):
+    print_message("warning", *msgs, **options)
+
+def info(*msgs, **options):
+    print_message("info", *msgs, **options)
+
+def dbg(funct, *msgs, **options):
+    if not "debug" in options:
+        options["debug"]=False
+
+    if options["debug"] is True:
+        globals()[funct](*msgs, **options)
+
+def print_message(log_type, *msgs, **options):
+    for key in opts:
+        if key not in options:
+            options.update({key:opts[key]})
+
+    text=""
+    if len(msgs) == 1:
+        text=ft.log(log_type, "".join(msgs))
+    else:
+        for m, msg in enumerate(msgs):
+            end_line="\n"
+            if m+1 == len(msgs):
+                end_line=""
+            text+="{}{}".format(ft.log(log_type, msg), end_line)
+
+    logging.getLogger().setLevel(logging.DEBUG)
+    logging.basicConfig(format="")
+
+    if log_type == "error":
+        logging.error(text)
+    elif log_type == "info":
+        print(text)
+    elif log_type == "success":
+        print(text)
+    elif log_type == "warning":
+        logging.warning(text)
+
+    if options["trace"] is True:
         printed_trace=False
         if hasattr(traceback, 'print_stack'):
             printed_trace=True
@@ -32,38 +78,6 @@ def error(*msgs, code=None, format="", trace=False ):
         if printed_trace is False:
             print("No stack to print")
 
-    if code is not None:
-        sys.exit(code)
-        
-def success(*msgs, **options):
-    print_message("success", *msgs)
-
-def warning(*msgs, **options):
-    print_message("warning", *msgs)
-
-def info(*msgs, **options):
-    print_message("info", *msgs)
-
-def dbg(funct, *msgs, **options):
-    if not "debug" in options:
-        options["debug"]=False
-
-    if options["debug"] is True:
-        globals()[funct](*msgs, **options)
-
-def print_message(log_type, *msgs, to_print=True):
-    text=""
-    if len(msgs) == 1:
-        text=ft.log(log_type, "".join(msgs))
-    else:
-        for m, msg in enumerate(msgs):
-            end_line="\n"
-            if m+1 == len(msgs):
-                end_line=""
-            text+="{}{}".format(ft.log(log_type, msg), end_line)
-
-    if to_print is True:
-        print(text)
-    else:
-        return text
+    if options["exit"] is not None:
+        sys.exit(options["exit"])
     
