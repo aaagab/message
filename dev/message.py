@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.0.2
+# version: 5.0.3
 # name: message
 # license: MIT
 
 import logging
+import platform
 import traceback
 import inspect, sys, os
 
 from ..gpkgs.format_text import ft
+
+if platform.system() == "Windows":
+    import ctypes
+    kernel32 = ctypes.windll.kernel32
+    kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
 opts=dict(
     exit=None,
