@@ -41,6 +41,9 @@ def dbg(funct, *msgs, **options):
         globals()[funct](*msgs, **options)
 
 def print_message(log_type, *msgs, **options):
+    if platform.system() == "Windows":
+        kernel32 = ctypes.windll.kernel32
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
     for key in opts:
         if key not in options:
             options.update({key:opts[key]})
