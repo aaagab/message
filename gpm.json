@@ -3,7 +3,7 @@
         "Gabriel Auger"
     ],
     "deps": [
-        "a30e109e-650f-4636-83e4-e18320c60788|format_text|0.3.1|gpm"
+        "a30e109e-650f-4636-83e4-e18320c60788|format_text|0.3.0|gpm"
     ],
     "description": "Simple tui library for python",
     "filen_main": "__init__.py",
