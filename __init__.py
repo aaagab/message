@@ -6,4 +6,4 @@
 
 __version__ = "5.0.8"
 
-from .dev.message import dbg, error, ft, info, success, warning
+from .dev.message import error, ft, info, success, warning

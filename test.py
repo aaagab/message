@@ -63,8 +63,8 @@ if __name__ == "__main__":
         )
     print()
 
-    msg.dbg("info", "This is a debug info message", debug=True)
-    msg.dbg("success", "This is a debug success, debug can apply to any msg type", debug=True)
+    msg.info("Debug message printed", debug=True)
+    msg.info("Debug message not printed", debug=False)
 
     print()
     text="You can create custom messages too"
