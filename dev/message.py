@@ -14,6 +14,7 @@ if platform.system() == "Windows":
 opts=dict(
     debug=False,
     exit=None,
+    keys=[],
     trace=False,
 )
 
@@ -46,6 +47,10 @@ def print_message(log_type, *msgs, **options):
                 options.update({key:opts[key]})
 
         text=""
+
+        if isinstance(msgs[0], list):
+            msgs=list(msgs[0])
+
         if len(msgs) == 1:
             text=ft.log(log_type, "".join(msgs))
         else:
@@ -54,6 +59,12 @@ def print_message(log_type, *msgs, **options):
                 if m+1 == len(msgs):
                     end_line=""
                 text+="{}{}".format(ft.log(log_type, msg), end_line)
+
+        if options["keys"]:
+            if isinstance(options["keys"], list):
+                text=text.format(*options["keys"])
+            elif isinstance(options["keys"], dict):
+                text=text.format(**options["keys"])
 
         logging.getLogger().setLevel(logging.DEBUG)
         logging.basicConfig(format="")
