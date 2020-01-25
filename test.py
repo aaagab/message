@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.0.0
+# version: 6.1.0
 # name: message
 # license: MIT
 
@@ -27,6 +27,37 @@ if __name__ == "__main__":
         "This is a multiline info"
         )
     print()
+
+    mylist=[ 
+        "line one '{}'", 
+        "line two '{}'", 
+        "line tree '{}'" ]
+    msg.info("An array is given \"{}\" instead of multiple lines".format(mylist))
+    print()
+    msg.info(mylist)
+    print()
+
+    keys=["first_value", "second_value", "third_value"]
+    msg.info("keys list \"{}\" is given to populate empty fields '{{}}'".format(keys,))
+    print()
+    msg.info(mylist, keys=keys)
+    print()
+
+    mylist=[ 
+        "line one '{first}'", 
+        "line two '{second}'", 
+        "line tree '{first} and '{third}''" 
+    ]
+    keys={
+        "first":"first_value", 
+        "second":"second_value", 
+        "third":"third_value"
+    }
+    msg.info("It also work with keywords")
+    print()
+    msg.info(mylist, keys=keys)
+    print()
+    
     msg.warning("This is a single line warning")
     print()
     msg.warning(
@@ -76,4 +107,4 @@ if __name__ == "__main__":
     print("  "+msg.ft.lBlue(ldeco)+msg.ft.bold(text)+msg.ft.lCyan(rdeco))
     print()
 
-    msg.error("This is an error with stack trace and system exit with code 1", code=1, trace=True)
+    msg.error("This is an error with stack trace and system exit with code 1", exit=1, trace=True)
