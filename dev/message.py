@@ -48,18 +48,22 @@ def print_message(log_type, *msgs, **options):
 
         text=""
 
-        if isinstance(msgs[0], list):
-            msgs=list(msgs[0])
+        tmp_msgs=[]
+        for msg in msgs:
+            if isinstance(msg, list):
+                for m in msg:
+                    tmp_msgs.append(m)
+            else:
+                tmp_msgs.append(msg)
 
-        if len(msgs) == 1:
-            text=ft.log(log_type, "".join(msgs))
-        else:
-            for m, msg in enumerate(msgs):
-                end_line="\n"
-                if m+1 == len(msgs):
-                    end_line=""
-                text+="{}{}".format(ft.log(log_type, msg), end_line)
-
+        msgs=tmp_msgs
+ 
+        for m, msg in enumerate(msgs):
+            end_line="\n"
+            if m+1 == len(msgs):
+                end_line=""
+            text+="{}{}".format(ft.log(log_type, msg), end_line)
+                
         if options["keys"]:
             if isinstance(options["keys"], list):
                 text=text.format(*options["keys"])

@@ -32,9 +32,13 @@ if __name__ == "__main__":
         "line one '{}'", 
         "line two '{}'", 
         "line tree '{}'" ]
-    msg.info("An array is given \"{}\" instead of multiple lines".format(mylist))
+    msg.info("A list is given \"{}\" instead of multiple lines".format(mylist))
     print()
     msg.info(mylist)
+    print()
+    msg.info("Multiple lists can be given \"{}\" and also simple lines".format(mylist))
+    print()
+    msg.info("list 1:", mylist, "", "list 2", mylist )
     print()
 
     keys=["first_value", "second_value", "third_value"]
