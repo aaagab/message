@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 7.0.0
+# version: 7.1.0
 # name: message
 # license: MIT
 
@@ -63,25 +63,31 @@ if __name__ == "__main__":
     print()
 
     text_heredoc="""
-        first line
-        this is my heredoc:
-            - with another text
-            - and another <red>text</red>
-            - and a variable <cyan>'{key}'</cyan>
+            first line
+            this is my heredoc:
+                - with '<green>another</green>' text
+                - and another <red>text</red>
+                - and a variable <cyan>'{key}'</cyan>
     """
-    # print(type(text_heredoc))
     msg.info("Regular heredoc")
     print(text_heredoc)
 
     msg.info("Msg heredoc")
     print()
-    msg.info(text_heredoc, heredoc=True, indent="  ", keys=dict(key="myVariable"))
+    msg.info(text_heredoc, heredoc=True, keys=dict(key="myVariable"))
+
+    print()
+    msg.error(text_heredoc, heredoc=True, keys=dict(key="myVariable"))
+
+
+    msg.error("This is a single line error")
+
 
     print()   
 
     msg.info("Wrapper is also enabled just use the width parameter with 'auto', None or int")
     msg.info(
-        "This is a long <bold>wrapped</bold> text, <yellow>that is going to be wrapped according to the size</yellow> of the terminal or the the user chosen size, you can also provide an indent so the wrapped size is set according to the indent size. There is a minimum line width (width-indent) = 1 and no maximum width'", 
+        "This is a long <bold>wrapped</bold> text, <yellow>that is going to be <dgray>wrapped</dgray> according to the size</yellow> of the terminal or the the user chosen size, you can also provide an indent so the wrapped size is set according to the indent size. There is a minimum line width (width-indent) = 1 and no maximum width'", 
         bullet="",
         indent="\t\t",
         style=True,

@@ -19,6 +19,7 @@ opts=dict(
     bullet=None, # to disable bullet, use bullet=""
     debug=False,
     exit=None,
+    format=True,
     heredoc=False,
     indent="  ",
     keys=[],
@@ -105,18 +106,25 @@ def print_message(log_type, *msgs, **options):
                     else:
                         tmp_text=get_text_without_indent(line, heredoc_indent)
 
+                    if log_type == "error":
+                        tmp_text=re.sub(r"^(\s+)?(.*)$", r"\1<red>\2</red>", tmp_text)
+
                     all_msgs.append(ft.log(
                         text=tmp_text,
-                        bullet=bullet, 
+                        bullet=bullet,
+                        format=options["format"], 
                         indent=indent, 
                         style=options["style"],
                         width=options["width"], 
                     ))
         else:
             for msg in tmp_msgs:
+                if log_type == "error":
+                    msg="<red>{}</red>".format(msg)
                 all_msgs.append(ft.log(
                     text=msg,
-                    bullet=bullet, 
+                    bullet=bullet,
+                    format=options["format"], 
                     indent=indent, 
                     style=options["style"],
                     width=options["width"], 
@@ -124,16 +132,6 @@ def print_message(log_type, *msgs, **options):
 
         text="\n".join(all_msgs)
 
-                # end_line="\n"
-                # if m+1 == len(tmp_msgs):
-                #     end_line=""
-                # tmp_msg=msg
-                # if options["format"] is True:
-                #     tmp_msg=ft.log(log_type, msg)
-                # text+="{}{}{}".format(indent, tmp_msg, end_line)
-            
-            # if options["heredoc"] is True:
-                # break
                 
         if options["keys"]:
             if isinstance(options["keys"], list):
@@ -179,10 +177,6 @@ def print_message(log_type, *msgs, **options):
 def get_text_without_indent(text, indent):
     if indent is None:
         indent=""
-    # tmp_text=""
-    # if text.strip():
-        # tmp_indent=get_heredoc_indent(text)
-        # print("'{}'".format(tmp_indent))
 
     tmp_text=re.sub(r"^({})(.*)".format(indent), r"\2", text.rstrip())
 
