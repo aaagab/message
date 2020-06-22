@@ -61,6 +61,43 @@ if __name__ == "__main__":
     print()
     msg.info(mylist, keys=keys)
     print()
+
+    text_heredoc="""
+        first line
+        this is my heredoc:
+            - with another text
+            - and another <red>text</red>
+            - and a variable <cyan>'{key}'</cyan>
+    """
+    # print(type(text_heredoc))
+    msg.info("Regular heredoc")
+    print(text_heredoc)
+
+    msg.info("Msg heredoc")
+    print()
+    msg.info(text_heredoc, heredoc=True, indent="  ", keys=dict(key="myVariable"))
+
+    print()   
+
+    msg.info("Wrapper is also enabled just use the width parameter with 'auto', None or int")
+    msg.info(
+        "This is a long <bold>wrapped</bold> text, <yellow>that is going to be wrapped according to the size</yellow> of the terminal or the the user chosen size, you can also provide an indent so the wrapped size is set according to the indent size. There is a minimum line width (width-indent) = 1 and no maximum width'", 
+        bullet="",
+        indent="\t\t",
+        style=True,
+        width="auto"
+    )
+
+    print()
+
+    msg.info(
+        "This is a long <bold>wrapped</bold> text, <yellow>that is going to be wrapped according to the size</yellow> of the terminal or the the user chosen size, you can also provide an indent so the wrapped size is set according to the indent size. There is a minimum line width (width-indent) = 1 and no maximum width'", 
+        bullet="",
+        indent="\t\t",
+        style=True,
+        width=30
+    )
+    print()
     
     msg.warning("This is a single line warning")
     print()
@@ -91,9 +128,9 @@ if __name__ == "__main__":
     msg.error("This is a single error with traceback", trace=True)
     print()
     msg.error(
-        "This is a multiline user error with traceback",
-        "This is a multiline user error with traceback",
-        "This is a multiline user error with traceback",
+        "This is a multiline error with traceback",
+        "This is a multiline error with traceback",
+        "This is a multiline error with traceback",
         trace=True
         )
     print()
@@ -103,12 +140,13 @@ if __name__ == "__main__":
 
     print()
     text="You can create custom messages too"
-    print(msg.ft.lGreen("  @@@@ ")+msg.ft.bold(text)+msg.ft.lGreen(" @@@@"))
+    print(msg.ft.lgreen("  @@@@ ")+msg.ft.bold(text)+msg.ft.lgreen(" @@@@"))
     print()
     ldeco="### "
     rdeco=""
     tmp_str=ldeco+text+rdeco;
-    print("  "+msg.ft.lBlue(ldeco)+msg.ft.bold(text)+msg.ft.lCyan(rdeco))
+    print("  "+msg.ft.lblue(ldeco)+msg.ft.bold(text)+msg.ft.lcyan(rdeco))
     print()
 
     msg.error("This is an error with stack trace and system exit with code 1", exit=1, trace=True)
+ 
