@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
+import inspect
 import logging
+import os
 import platform
+from pprint import pprint
+import re
+import sys
 import traceback
-import inspect, sys, os
 
 from ..gpkgs.format_text import ft
 
@@ -12,10 +16,15 @@ if platform.system() == "Windows":
     kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
 opts=dict(
+    bullet=None, # to disable bullet, use bullet=""
     debug=False,
     exit=None,
+    heredoc=False,
+    indent="  ",
     keys=[],
+    style=True,
     trace=False,
+    width="auto",  # auto, int, None
 )
 
 def error(*msgs, **options ):
@@ -46,8 +55,6 @@ def print_message(log_type, *msgs, **options):
             if key not in options:
                 options.update({key:opts[key]})
 
-        text=""
-
         tmp_msgs=[]
         for msg in msgs:
             if isinstance(msg, list):
@@ -56,13 +63,77 @@ def print_message(log_type, *msgs, **options):
             else:
                 tmp_msgs.append(msg)
 
-        msgs=tmp_msgs
- 
-        for m, msg in enumerate(msgs):
-            end_line="\n"
-            if m+1 == len(msgs):
-                end_line=""
-            text+="{}{}".format(ft.log(log_type, msg), end_line)
+        if not tmp_msgs:
+            tmp_msgs.append("")
+
+        indent=None 
+        if options["indent"] is None:
+            indent="  "
+            indent=""
+        else:
+            indent=options["indent"]
+
+        bullet=None
+        if options["bullet"] is None:
+            bullet=log_type
+        else:
+            bullet=options["bullet"]
+
+        all_msgs=[]
+        if options["heredoc"] is True:
+            heredoc_indent=None
+            if tmp_msgs:
+                lines=tmp_msgs[0].splitlines()
+                firstLineText=False
+
+                after_bullet=None
+                if bullet in ft.get_bullets():
+                    after_bullet=" "
+                else:
+                    words_info=ft.get_style_formatted_words([bullet])
+                    after_bullet=" "*len(words_info[0]["word"])
+
+                for l, line in enumerate(lines[1:-1]):
+                    if l == 0:
+                        heredoc_indent=get_heredoc_indent(line)
+                    else:
+                        bullet=after_bullet
+
+                    tmp_text=None
+                    if not line.strip():
+                        tmp_text=""
+                    else:
+                        tmp_text=get_text_without_indent(line, heredoc_indent)
+
+                    all_msgs.append(ft.log(
+                        text=tmp_text,
+                        bullet=bullet, 
+                        indent=indent, 
+                        style=options["style"],
+                        width=options["width"], 
+                    ))
+        else:
+            for msg in tmp_msgs:
+                all_msgs.append(ft.log(
+                    text=msg,
+                    bullet=bullet, 
+                    indent=indent, 
+                    style=options["style"],
+                    width=options["width"], 
+                ))
+
+        text="\n".join(all_msgs)
+
+                # end_line="\n"
+                # if m+1 == len(tmp_msgs):
+                #     end_line=""
+                # tmp_msg=msg
+                # if options["format"] is True:
+                #     tmp_msg=ft.log(log_type, msg)
+                # text+="{}{}{}".format(indent, tmp_msg, end_line)
+            
+            # if options["heredoc"] is True:
+                # break
                 
         if options["keys"]:
             if isinstance(options["keys"], list):
@@ -104,4 +175,19 @@ def print_message(log_type, *msgs, **options):
 
         if options["exit"] is not None:
             sys.exit(options["exit"])
-    
+
+def get_text_without_indent(text, indent):
+    if indent is None:
+        indent=""
+    # tmp_text=""
+    # if text.strip():
+        # tmp_indent=get_heredoc_indent(text)
+        # print("'{}'".format(tmp_indent))
+
+    tmp_text=re.sub(r"^({})(.*)".format(indent), r"\2", text.rstrip())
+
+    return tmp_text
+    # return "{}{}".format(indent, tmp_text)
+
+def get_heredoc_indent(txt):
+    return re.match(r"(\s*).*", txt).group(1)
