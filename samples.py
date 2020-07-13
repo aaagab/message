@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 7.1.0
+# version: 7.1.1
 # name: message
 # license: MIT
 
@@ -140,6 +140,16 @@ if __name__ == "__main__":
         trace=True
         )
     print()
+
+
+    msg.error(
+        "url is not a valid url, you need hostname for 'departments'",
+        "Possible reasons:",
+        " - Environ variable 'HOSTNAME_URL' not set",
+        " - 'HOSTNAME_URL'.txt does not exists or is not a file.",
+        " - 'HOSTNAME_URL'.txt is empty",
+        " - Value provided by the file or the env var does not match '^http.*$'",
+    )
 
     msg.info("Debug message printed", debug=True)
     msg.info("Debug message not printed", debug=False)

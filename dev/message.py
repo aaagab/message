@@ -121,14 +121,15 @@ def print_message(log_type, *msgs, **options):
             for msg in tmp_msgs:
                 if log_type == "error":
                     msg="<red>{}</red>".format(msg)
-                all_msgs.append(ft.log(
+                tmp_msg=ft.log(
                     text=msg,
                     bullet=bullet,
                     format=options["format"], 
                     indent=indent, 
                     style=options["style"],
                     width=options["width"], 
-                ))
+                )
+                all_msgs.append(tmp_msg)
 
         text="\n".join(all_msgs)
 
