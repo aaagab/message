@@ -4,3 +4,4 @@ __pycache__/
 .vscode
 /.pkgs/
 /gpkgs/
+/todo.txt
