@@ -1,187 +1,219 @@
 #!/usr/bin/env python3
-import inspect
-import logging
+from pprint import pprint
 import os
 import platform
-from pprint import pprint
 import re
 import sys
 import traceback
-
-from ..gpkgs.format_text import ft
 
 if platform.system() == "Windows":
     import ctypes
     kernel32 = ctypes.windll.kernel32
     kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
-opts=dict(
-    bullet=None, # to disable bullet, use bullet=""
-    debug=False,
+def error(
+    msgs, 
     exit=None,
-    format=True,
     heredoc=False,
-    indent="  ",
+    prefix=None,
+    pretty=True,
     keys=[],
-    style=True,
     trace=False,
-    width="auto",  # auto, int, None
-)
+):
+    print_message(
+        "error",
+        msgs,
+        exit=exit,
+        heredoc=heredoc,
+        prefix=prefix,
+        pretty=pretty,
+        keys=keys,
+        trace=trace,
+    )
 
-def error(*msgs, **options ):
-    print_message("error", *msgs, **options)
-        
-def success(*msgs, **options):
-    print_message("success", *msgs, **options)
+def info(
+    msgs, 
+    exit=None,
+    heredoc=False,
+    prefix=None,
+    pretty=True,
+    keys=[],
+    trace=False,
+):
+    print_message(
+        "info",
+        msgs,
+        exit=exit,
+        heredoc=heredoc,
+        prefix=prefix,
+        pretty=pretty,
+        keys=keys,
+        trace=trace,
+    ) 
 
-def warning(*msgs, **options):
-    print_message("warning", *msgs, **options)
+def success(
+    msgs, 
+    exit=None,
+    heredoc=False,
+    prefix=None,
+    pretty=True,
+    keys=[],
+    trace=False,
+):
+    print_message(
+        "success",
+        msgs,
+        exit=exit,
+        heredoc=heredoc,
+        prefix=prefix,
+        pretty=pretty,
+        keys=keys,
+        trace=trace,
+    )
 
-def info(*msgs, **options):
-    print_message("info", *msgs, **options)
+def warning(
+    msgs, 
+    exit=None,
+    heredoc=False,
+    prefix=None,
+    pretty=True,
+    keys=[],
+    trace=False,
+):
+    print_message(
+        "warning",
+        msgs,
+        exit=exit,
+        heredoc=heredoc,
+        prefix=prefix,
+        pretty=pretty,
+        keys=keys,
+        trace=trace,
+    )
 
-def print_message(log_type, *msgs, **options):
-    display_msg=False
-    if "debug" in options:
-        if options["debug"] is True:
-            display_msg=True
+def clear(scroll=False):
+    if scroll is False:
+        print("\x1b[2J\x1b[H", end="")
     else:
-        display_msg=True
+        print("\x1b[2J\x1b[H\x1b[3J", end="")
 
-    if display_msg is True:
-        if platform.system() == "Windows":
-            kernel32 = ctypes.windll.kernel32
-            kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
-        for key in opts:
-            if key not in options:
-                options.update({key:opts[key]})
-
-        tmp_msgs=[]
-        for msg in msgs:
-            if isinstance(msg, list):
-                for m in msg:
-                    tmp_msgs.append(m)
+def get_heredoc(text, indent=0, prefix=None):
+    first_line=True
+    main_indent=0
+    lines=[]
+    text_lines=text.splitlines()
+    for l, line in enumerate(text_lines):
+        if l == len(text_lines) - 1:
+            if line.strip() != "":
+                lines.append("{}{}".format(indent*" ", line[main_indent:]))
+        else:
+            if first_line is True:
+                if line.strip() != "":
+                    first_line=False
+                    main_indent=len(line)-len(line.lstrip())
+                    if prefix is None:
+                        lines.append("{}{}".format(indent*" ", line.lstrip()))
+                    else:
+                        lines.append("{}{}: {}".format(indent*" ", prefix, line.lstrip()))
             else:
-                tmp_msgs.append(msg)
+                lines.append("{}{}".format(indent*" ", line[main_indent:]))
+    return "\n".join(lines)
 
-        if not tmp_msgs:
-            tmp_msgs.append("")
+def print_message(msg_type, 
+    msgs, 
+    exit=None,
+    heredoc=False,
+    prefix=None,
+    pretty=True,
+    keys=[],
+    trace=False,
+):
+    if sys.stdout.isatty() is False:
+        pretty=False
 
-        indent=None 
-        if options["indent"] is None:
-            indent="  "
-            indent=""
-        else:
-            indent=options["indent"]
-
-        bullet=None
-        if options["bullet"] is None:
-            bullet=log_type
-        else:
-            bullet=options["bullet"]
-
-        all_msgs=[]
-        if options["heredoc"] is True:
-            heredoc_indent=None
-            if tmp_msgs:
-                lines=tmp_msgs[0].splitlines()
-                firstLineText=False
-
-                after_bullet=None
-                if bullet in ft.get_bullets():
-                    after_bullet=" "
+    log_msgs=[]
+    indent=2
+    if isinstance(msgs, str):
+        msgs=[msgs]
+    for msg in msgs:
+        tmp_msg=None
+        if heredoc is True:
+            if pretty is True:
+                if prefix is None:
+                    tmp_msg=get_heredoc(msg, indent=indent+2)
                 else:
-                    words_info=ft.get_style_formatted_words([bullet])
-                    after_bullet=" "*len(words_info[0]["word"])
-
-                for l, line in enumerate(lines[1:-1]):
-                    if l == 0:
-                        heredoc_indent=get_heredoc_indent(line)
-                    else:
-                        bullet=after_bullet
-
-                    tmp_text=None
-                    if not line.strip():
-                        tmp_text=""
-                    else:
-                        tmp_text=get_text_without_indent(line, heredoc_indent)
-
-                    if log_type == "error":
-                        tmp_text=re.sub(r"^(\s+)?(.*)$", r"\1<red>\2</red>", tmp_text)
-
-                    all_msgs.append(ft.log(
-                        text=tmp_text,
-                        bullet=bullet,
-                        format=options["format"], 
-                        indent=indent, 
-                        style=options["style"],
-                        width=options["width"], 
-                    ))
-        else:
-            for msg in tmp_msgs:
-                if log_type == "error":
-                    msg="<red>{}</red>".format(msg)
-                all_msgs.append(ft.log(
-                    text=msg,
-                    bullet=bullet,
-                    format=options["format"], 
-                    indent=indent, 
-                    style=options["style"],
-                    width=options["width"], 
-                ))
-
-        text="\n".join(all_msgs)
-
-                
-        if options["keys"]:
-            if isinstance(options["keys"], list):
-                text=text.format(*options["keys"])
-            elif isinstance(options["keys"], dict):
-                text=text.format(**options["keys"])
-
-        logging.getLogger().setLevel(logging.DEBUG)
-        logging.basicConfig(format="")
-
-        if log_type == "error":
-            logging.error(text)
-        elif log_type == "info":
-            if options["debug"] is True:
-                print(text)
+                    tmp_msg=get_heredoc(msg, indent=indent+2, prefix=prefix)
+                    prefix=None
             else:
-                logging.info(text)
-        elif log_type == "success":
-            print(text)
-        elif log_type == "warning":
-            logging.warning(text)
+                if prefix is None:
+                    tmp_msg=get_heredoc(msg)
+                else:
+                    print("here")
+                    sys.exit()
+                    tmp_msg=get_heredoc(msg, prefix=prefix)
+                    prefix=None
+        else:
+            if prefix is None:
+                tmp_msg=msg
+            else:
+                tmp_msg="{}: {}".format(prefix, msg)
+                prefix=None
+        log_msgs.append(tmp_msg)
 
-        if options["trace"] is True:
-            printed_trace=False
-            if hasattr(traceback, 'print_stack'):
-                printed_trace=True
-                traceback.print_stack()
+    if pretty is True:
+        bullet=None
+        if msg_type == "error":
+            bullet="\x1b[1m\x1b[91m\u00D7\x1b[39m\x1b[21m"
+        elif msg_type == "info":
+            bullet="\x1b[1m\x1b[96m*\x1b[39m\x1b[21m"
+        elif msg_type == "success":
+            bullet="\x1b[1m\x1b[92m\u221A\x1b[39m\x1b[21m"
+        elif msg_type == "warning":
+            bullet="\x1b[1m\x1b[93m\u2206\x1b[39m\x1b[21m"
 
-            if printed_trace is False:
-                if hasattr(traceback, 'format_exc'):
-                    text=traceback.format_exc()
-                    if text is not None:
-                        if text.strip() != "NoneType: None":
-                            printed_trace=True
-                            print(text)
+    print_msgs=[]
+    for msg in log_msgs:
+        if pretty is True:
+            tmp_indent=" "
+            if heredoc is True:
+                msg=msg[indent+1:]
+                tmp_indent=""
+            if msg_type == "error":
+                msg="\x1b[31m{}\x1b[39m".format(msg)
+            tmp_msg="{}{}{}{}".format(indent*" ", bullet, tmp_indent, msg)
+            print_msgs.append(tmp_msg)
+        else:
+            print_msgs.append(msg)
 
-            if printed_trace is False:
-                print("No stack to print")
+    print_msgs="\n".join(print_msgs)
+    if pretty is True:
+        print_msgs="\x1b[0m{}".format(print_msgs)
 
-        if options["exit"] is not None:
-            sys.exit(options["exit"])
+    if len(keys) > 0:
+        if isinstance(keys, list):
+            print_msgs=print_msgs.format(*keys)
+        elif isinstance(keys, dict):
+            print_msgs=print_msgs.format(**keys)
+    
+    printed_stack=None
+    if trace is True:
+        print_msgs+="\nSTACK TRACE:\n{}".format("".join(traceback.format_stack()[:-2]))
 
-def get_text_without_indent(text, indent):
-    if indent is None:
-        indent=""
+    prefix_type=""
+    if pretty is False:
+        if msg_type == "error":
+            prefix_type="ERROR: "
+        elif msg_type == "info":
+            prefix_type="INFO: "
+        elif msg_type == "success":
+            prefix_type="SUCCESS: "
+        elif msg_type == "warning":
+            prefix_type="WARNING: "
 
-    tmp_text=re.sub(r"^({})(.*)".format(indent), r"\2", text.rstrip())
+    if msg_type == "error":
+        print("{}{}".format(prefix_type, print_msgs), file=sys.stderr)
+    else:
+        print("{}{}".format(prefix_type, print_msgs))
 
-    return tmp_text
-    # return "{}{}".format(indent, tmp_text)
-
-def get_heredoc_indent(txt):
-    return re.match(r"(\s*).*", txt).group(1)
+    if exit is not None:
+        sys.exit(exit)
