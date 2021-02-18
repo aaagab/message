@@ -172,6 +172,7 @@ def print_message(msg_type,
             bullet="\x1b[1m\x1b[93m\u2206\x1b[39m\x1b[21m"
 
     print_msgs=[]
+    first_line=True
     for msg in log_msgs:
         if pretty is True:
             tmp_indent=" "
@@ -180,7 +181,12 @@ def print_message(msg_type,
                 tmp_indent=""
             if msg_type == "error":
                 msg="\x1b[31m{}\x1b[39m".format(msg)
-            tmp_msg="{}{}{}{}".format(indent*" ", bullet, tmp_indent, msg)
+            line_start=(indent+1)*" "
+            if first_line is True:
+                first_line=False
+                line_start="{}{}".format(indent*" ", bullet)
+            tmp_msg="{}{}{}".format(line_start, tmp_indent, msg)
+
             print_msgs.append(tmp_msg)
         else:
             print_msgs.append(msg)
