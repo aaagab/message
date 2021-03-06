@@ -163,13 +163,13 @@ def print_message(msg_type,
     if pretty is True:
         bullet=None
         if msg_type == "error":
-            bullet="\x1b[1m\x1b[91m\u00D7\x1b[39m\x1b[21m"
+            bullet="\x1b[1m\x1b[91m\u00D7\x1b[39m\x1b[22m"
         elif msg_type == "info":
-            bullet="\x1b[1m\x1b[96m*\x1b[39m\x1b[21m"
+            bullet="\x1b[1m\x1b[96m*\x1b[39m\x1b[22m"
         elif msg_type == "success":
-            bullet="\x1b[1m\x1b[92m\u221A\x1b[39m\x1b[21m"
+            bullet="\x1b[1m\x1b[92m\u221A\x1b[39m\x1b[22m"
         elif msg_type == "warning":
-            bullet="\x1b[1m\x1b[93m\u2206\x1b[39m\x1b[21m"
+            bullet="\x1b[1m\x1b[93m\u2206\x1b[39m\x1b[22m"
 
     print_msgs=[]
     first_line=True
