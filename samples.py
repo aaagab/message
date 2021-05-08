@@ -128,4 +128,12 @@ if __name__ == "__main__":
     print()
 
     msg.error("This is an error with stack trace and system exit with code 1", exit=1, trace=True)
+
+    # To test stderr and stdout put that in another file
+    # import subprocess
+    # proc=subprocess.Popen(["./samples.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdout, stderr=proc.communicate()
+    # print(stdout)
+    # print(stderr)
+    # print(proc.returncode)
  
