@@ -148,8 +148,6 @@ def print_message(msg_type,
                 if prefix is None:
                     tmp_msg=get_heredoc(msg)
                 else:
-                    print("here")
-                    sys.exit()
                     tmp_msg=get_heredoc(msg, prefix=prefix)
                     prefix=None
         else:
@@ -180,7 +178,7 @@ def print_message(msg_type,
                 msg=msg[indent+1:]
                 tmp_indent=""
             if msg_type == "error":
-                msg="\x1b[31m{}\x1b[39m".format(msg)
+                msg="\x1b[91m{}\x1b[39m".format(msg)
             line_start=(indent+1)*" "
             if first_line is True:
                 first_line=False
@@ -203,7 +201,7 @@ def print_message(msg_type,
     
     printed_stack=None
     if trace is True:
-        print_msgs+="\nSTACK TRACE:\n{}".format("".join(traceback.format_stack()[:-2]))
+        print_msgs="STACK TRACE:\n{}".format("".join(traceback.format_stack()[:-2]))+print_msgs
 
     prefix_type=""
     if pretty is False:
@@ -216,7 +214,7 @@ def print_message(msg_type,
         elif msg_type == "warning":
             prefix_type="WARNING: "
 
-    if msg_type == "error":
+    if msg_type in ["error", "warning"]:
         print("{}{}".format(prefix_type, print_msgs), file=sys.stderr)
     else:
         print("{}{}".format(prefix_type, print_msgs))
