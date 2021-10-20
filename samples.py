@@ -127,9 +127,17 @@ if __name__ == "__main__":
     ], trace=True)
     print()
 
-    msg.error("This is an error with stack trace and system exit with code 1", exit=1, trace=True)
+    try:
+        # to_raise option helps mainly when testing a program, in help putting try except and testing the error message
+        # if no try except then program exit with default 1 or custom exit number
+        msg.error("This is an error with raise Exception", to_raise=True, exit=3)
+    except Exception as e:
+        print("error message from try-except:", e)
+
+    msg.error("This is an error with stack trace and system exit with code 2", exit=2, trace=True)
 
     # To test stderr and stdout put that in another file
+    # msg.warning and msg.error print to stderr if to_raise=False
     # import subprocess
     # proc=subprocess.Popen(["./samples.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # stdout, stderr=proc.communicate()
