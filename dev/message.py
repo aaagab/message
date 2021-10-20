@@ -17,7 +17,8 @@ def error(
     heredoc=False,
     prefix=None,
     pretty=True,
-    keys=[],
+    keys=None,
+    to_raise=False,
     trace=False,
 ):
     print_message(
@@ -28,6 +29,7 @@ def error(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
+        to_raise=to_raise,
         trace=trace,
     )
 
@@ -37,7 +39,8 @@ def info(
     heredoc=False,
     prefix=None,
     pretty=True,
-    keys=[],
+    keys=None,
+    to_raise=False,
     trace=False,
 ):
     print_message(
@@ -48,6 +51,7 @@ def info(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
+        to_raise=to_raise,
         trace=trace,
     ) 
 
@@ -57,7 +61,8 @@ def success(
     heredoc=False,
     prefix=None,
     pretty=True,
-    keys=[],
+    keys=None,
+    to_raise=False,
     trace=False,
 ):
     print_message(
@@ -68,6 +73,7 @@ def success(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
+        to_raise=to_raise,
         trace=trace,
     )
 
@@ -77,7 +83,8 @@ def warning(
     heredoc=False,
     prefix=None,
     pretty=True,
-    keys=[],
+    keys=None,
+    to_raise=False,
     trace=False,
 ):
     print_message(
@@ -88,6 +95,7 @@ def warning(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
+        to_raise=to_raise,
         trace=trace,
     )
 
@@ -125,11 +133,21 @@ def print_message(msg_type,
     heredoc=False,
     prefix=None,
     pretty=True,
-    keys=[],
+    keys=None,
+    to_raise=False,
     trace=False,
 ):
+    if keys is None:
+        keys=[]
+
     if sys.stdout.isatty() is False:
         pretty=False
+
+    if to_raise is True:
+        pretty=False
+        trace=False
+        if exit is None:
+            exit=1
 
     log_msgs=[]
     indent=2
@@ -214,10 +232,20 @@ def print_message(msg_type,
         elif msg_type == "warning":
             prefix_type="WARNING: "
 
-    if msg_type in ["error", "warning"]:
-        print("{}{}".format(prefix_type, print_msgs), file=sys.stderr)
-    else:
-        print("{}{}".format(prefix_type, print_msgs))
+    print_msg="{}{}".format(prefix_type, print_msgs)
+    if to_raise is False:
+        if msg_type in ["error", "warning"]:
+            print(print_msg, file=sys.stderr)
+        else:
+            print(print_msg)
 
     if exit is not None:
+        if to_raise is True:
+            def handleUncaughtException(exctype, value, trace):
+                oldHook(exctype, value, trace)
+                sys.exit(exit)
+
+            sys.excepthook, oldHook = handleUncaughtException, sys.excepthook
+            raise Exception(print_msgs)
+
         sys.exit(exit)
