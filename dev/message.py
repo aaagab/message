@@ -18,7 +18,7 @@ def error(
     prefix=None,
     pretty=True,
     keys=None,
-    to_raise=False,
+    exc=None,
     trace=False,
 ):
     print_message(
@@ -29,7 +29,7 @@ def error(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
-        to_raise=to_raise,
+        exc=exc,
         trace=trace,
     )
 
@@ -40,7 +40,7 @@ def info(
     prefix=None,
     pretty=True,
     keys=None,
-    to_raise=False,
+    exc=None,
     trace=False,
 ):
     print_message(
@@ -51,7 +51,7 @@ def info(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
-        to_raise=to_raise,
+        exc=exc,
         trace=trace,
     ) 
 
@@ -62,7 +62,7 @@ def success(
     prefix=None,
     pretty=True,
     keys=None,
-    to_raise=False,
+    exc=None,
     trace=False,
 ):
     print_message(
@@ -73,7 +73,7 @@ def success(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
-        to_raise=to_raise,
+        exc=exc,
         trace=trace,
     )
 
@@ -84,7 +84,7 @@ def warning(
     prefix=None,
     pretty=True,
     keys=None,
-    to_raise=False,
+    exc=None,
     trace=False,
 ):
     print_message(
@@ -95,7 +95,7 @@ def warning(
         prefix=prefix,
         pretty=pretty,
         keys=keys,
-        to_raise=to_raise,
+        exc=exc,
         trace=trace,
     )
 
@@ -134,7 +134,7 @@ def print_message(msg_type,
     prefix=None,
     pretty=True,
     keys=None,
-    to_raise=False,
+    exc=None,
     trace=False,
 ):
     if keys is None:
@@ -143,7 +143,7 @@ def print_message(msg_type,
     if sys.stdout.isatty() is False:
         pretty=False
 
-    if to_raise is True:
+    if exc is not None:
         pretty=False
         trace=False
         if exit is None:
@@ -233,19 +233,19 @@ def print_message(msg_type,
             prefix_type="WARNING: "
 
     print_msg="{}{}".format(prefix_type, print_msgs)
-    if to_raise is False:
+    if exc is None:
         if msg_type in ["error", "warning"]:
             print(print_msg, file=sys.stderr)
         else:
             print(print_msg)
 
     if exit is not None:
-        if to_raise is True:
+        if exc is not None:
             def handleUncaughtException(exctype, value, trace):
                 oldHook(exctype, value, trace)
                 sys.exit(exit)
 
             sys.excepthook, oldHook = handleUncaughtException, sys.excepthook
-            raise Exception(print_msgs)
+            raise exc(print_msgs)
 
         sys.exit(exit)
